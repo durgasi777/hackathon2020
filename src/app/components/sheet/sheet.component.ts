@@ -13,7 +13,7 @@ type AOA = any[][];
 })
 
 export class SheetComponent {
-  data: AOA = [[1, 2], [3, 4]];
+  data: AOA;
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
   fileName: string = 'SheetJS.xlsx';
 
