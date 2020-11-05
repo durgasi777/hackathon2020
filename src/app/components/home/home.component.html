@@ -1,15 +1,11 @@
 <div class="home">
-  <section class="info-cards">
-    <div class="flex-container">
-      Filter Controls
-    </div>
-  </section>
-
   <app-historical-table #historicalTable></app-historical-table>
 
   <section>
     <div class="flex-container">
-      <app-sheet></app-sheet>>
+      <app-sheet
+      (onFileUploaded)="onJobAFileUploaded()">
+      </app-sheet>
     </div>
   </section>
 

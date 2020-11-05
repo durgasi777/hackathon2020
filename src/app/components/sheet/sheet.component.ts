@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import * as XLSX from 'xlsx';
 
 import { ExcelDatabaseService } from '../../services/excel-database.service';
@@ -16,6 +16,9 @@ export class SheetComponent {
   data: AOA = [[1, 2], [3, 4]];
   wopts: XLSX.WritingOptions = { bookType: 'xlsx', type: 'array' };
   fileName: string = 'SheetJS.xlsx';
+
+  @Output()
+  onFileUploaded = new EventEmitter<void>();
 
   constructor(private dbService: ExcelDatabaseService) {
     console.log(`db service is online: ${this.dbService.isAvailable()}`)
@@ -39,6 +42,7 @@ export class SheetComponent {
       this.data = <AOA>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
     };
     reader.readAsBinaryString(target.files[0]);
+    this.onFileUploaded.emit();
   }
 
   getScore(): void {
