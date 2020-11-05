@@ -43,7 +43,6 @@ export class DatabaseComponent {
       //     }
       //   })
       // })
-      console.log(headers);
     };
     reader.readAsBinaryString(target.files[0]);
   }

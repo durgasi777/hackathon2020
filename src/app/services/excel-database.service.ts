@@ -16,19 +16,13 @@ export class ExcelDatabaseService {
     LoadBearing: 6,
     Material: 7,
     Thickness: 8,
-    Finish: 9,
-    Rate: 10
+    Finish: 10,
+    Rate: 11
   };
 
   loaData(data: AOA): void {
     this.data = data;
     delete this.cacheSimilarScore;
-
-    for(let rowIndex = 0; rowIndex < this.data.length; rowIndex++) {
-      for(let colIndex = 0; colIndex < this.data[rowIndex].length; colIndex++) {
-      //create maps so its easier to search later  
-      }
-    }
   }
 
   isAvailable(): boolean {
@@ -53,9 +47,10 @@ export class ExcelDatabaseService {
     for(let rowIndex = 1; rowIndex < this.data.length; rowIndex++) {
       let columnScore = new Map<number, number>();
 
-      this.data[rowIndex].forEach((col, colIndex) => {
+      for(let colIndex = 0; colIndex < this.data[rowIndex].length; colIndex++) {
+        const col = this.data[rowIndex][colIndex];
         //only compare indexes listed in headersIndexToCompareMap
-        if(columnIndexToCompare.some(val => val === colIndex))
+        if(columnIndexToCompare.indexOf(colIndex) > -1)
         {
           if(col === match[colIndex]) {
             columnScore.set(colIndex, 1);
@@ -63,7 +58,7 @@ export class ExcelDatabaseService {
             columnScore.set(colIndex, 0);
           }
         }
-      });
+      }
 
       scores.push({ columnScore: columnScore, rate: this.data[rowIndex][this.headersIndexToCompareMap.Rate] });
     }
@@ -76,6 +71,6 @@ export class ExcelDatabaseService {
   private getColumnIndexToCompare(): number[] {
     // only match some of the header
     // see headersIndexToCompareMap to know what is being matched 
-    return Object.values(this.headersIndexToCompareMap).filter(value => value > 4 && value < 10);
+    return Object.values(this.headersIndexToCompareMap).filter(value => value > 4 && value < 11 && value !== 9);
   }
 }
