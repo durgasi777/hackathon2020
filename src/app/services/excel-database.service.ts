@@ -5,8 +5,8 @@ type AOA = any[][];
 @Injectable()
 export class ExcelDatabaseService {
   data: AOA;
-  cacheSimilarScore = new Map<number, number[]>();
-  headersIndexMap = {
+  cacheSimilarScore: Map<number, number>[];
+  headersIndexToCompareMap = {
     Project: 0,
     Family: 1,
     Name: 2,
@@ -22,7 +22,7 @@ export class ExcelDatabaseService {
 
   loaData(data: AOA): void {
     this.data = data;
-    this.cacheSimilarScore = new Map<number, number[]>();
+    delete this.cacheSimilarScore;
 
     for(let rowIndex = 0; rowIndex < this.data.length; rowIndex++) {
       for(let colIndex = 0; colIndex < this.data[rowIndex].length; colIndex++) {
@@ -35,23 +35,42 @@ export class ExcelDatabaseService {
     return !!this.data;
   }
   
-  getRowSimilarityScore(rowIndex: number, match: string[]): number[] {
+
+  // comapre a row against database according to columnIndexToCompare
+  // returns an array of Map<number1, number2> where number 1 is the headerIndex and number2 is 1 (matched) or 0 (not matched)
+  getRowSimilarityScore(match: string[]): Map<number, number>[] {
     //use cache if exist
-    if(!!this.cacheSimilarScore.get(rowIndex)) {
-      return this.cacheSimilarScore.get(rowIndex);
+    if(!!this.cacheSimilarScore) {
+      return this.cacheSimilarScore;
     }
 
-    var scores: number[] = [];
-    this.data[rowIndex].forEach((column, index) => {
-      if(column === match[index]) {
-        scores.push(1);
-      } else {
-        scores.push(0);
-      }
-    });
+    let scores = [];
+    let columnIndexToCompare = this.getColumnIndexToCompare();
+
+    //skip header row
+    for(let rowIndex = 1; rowIndex < this.data.length; rowIndex++) {
+      let rowScore = new Map<number, number>();
+      this.data[rowIndex].forEach((col, colIndex) => {
+
+        //only compare indexes listed in headersIndexToCompareMap
+        if(columnIndexToCompare.some(val => val === colIndex))
+        {
+          if(col === match[colIndex]) {
+            rowScore.set(colIndex, 1);
+          } else {
+            rowScore.set(colIndex, 0);
+          }
+        }
+      })
+      scores.push(rowScore);
+    }
 
     //set cache
-    this.cacheSimilarScore.set(rowIndex, scores);
+    this.cacheSimilarScore = scores;
     return scores;
+  }
+
+  private getColumnIndexToCompare(): number[] {
+    return Object.values(this.headersIndexToCompareMap);
   }
 }
