@@ -5,6 +5,7 @@ type AOA = any[][];
 @Injectable()
 export class ExcelDatabaseService {
   data: AOA;
+  cacheSimilarScore = new Map<number, number[]>();
   headersIndexMap = {
     Project: 0,
     Family: 1,
@@ -21,6 +22,7 @@ export class ExcelDatabaseService {
 
   loaData(data: AOA): void {
     this.data = data;
+    this.cacheSimilarScore = new Map<number, number[]>();
 
     for(let rowIndex = 0; rowIndex < this.data.length; rowIndex++) {
       for(let colIndex = 0; colIndex < this.data[rowIndex].length; colIndex++) {
@@ -33,8 +35,13 @@ export class ExcelDatabaseService {
     return !!this.data;
   }
   
-  getRowSimilarityScore(rowIndex: number, match: []): number[] {
-    let scores = [];
+  getRowSimilarityScore(rowIndex: number, match: string[]): number[] {
+    //use cache if exist
+    if(!!this.cacheSimilarScore.get(rowIndex)) {
+      return this.cacheSimilarScore.get(rowIndex);
+    }
+
+    var scores: number[] = [];
     this.data[rowIndex].forEach((column, index) => {
       if(column === match[index]) {
         scores.push(1);
@@ -42,6 +49,9 @@ export class ExcelDatabaseService {
         scores.push(0);
       }
     });
+
+    //set cache
+    this.cacheSimilarScore.set(rowIndex, scores);
     return scores;
   }
 }
