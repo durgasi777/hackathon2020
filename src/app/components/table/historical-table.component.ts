@@ -75,6 +75,21 @@ export class HistoricalTableComponent implements OnInit {
     return element[index];
   }
 
+  getClass(element: any, column: any) {
+    const index = this.nonEmptyColumnNamesMap.get(column);
+    let isSelected = false;
+    if (this.jobAPushed) {
+      isSelected = (column === 'Category Name')
+                  || (column === 'Type Name' && element[index] === 'Basic Wall:Generic- 12" Masonry')
+                  || (column === 'Material' && element[index] === 'Concrete Masonry Units')
+                  || (column === 'Load Bearing')
+                  || (column === 'Thickness');
+    }
+    return {
+      'selected': isSelected
+    };
+  }
+
   onLocationFilterChanged(newFilter: any) {
     this.locationFilter = newFilter;
     this.onFilterChanged();

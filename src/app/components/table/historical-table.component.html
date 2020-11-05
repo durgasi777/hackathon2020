@@ -27,7 +27,7 @@
 <mat-table #table [dataSource]="tableDataSource" matSort *ngIf="data && data.length > 0">
   <ng-container matColumnDef="{{column}}" *ngFor="let column of columnNames; let i = index">
     <mat-header-cell *matHeaderCellDef mat-sort-header>{{column}}</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{getCell(element, column)}}</mat-cell>
+    <mat-cell *matCellDef="let element" [ngClass]="getClass(element, column)">{{getCell(element, column)}}</mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
