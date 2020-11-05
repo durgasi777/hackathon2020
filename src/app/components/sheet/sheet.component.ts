@@ -45,9 +45,9 @@ export class SheetComponent {
     //hardcode to check 2 rows
     for(let rowIndex = 1; rowIndex < 3; rowIndex++) {
       const rowData = this.data[rowIndex];
-      const result = this.dbService.getRowSimilarityScore(rowData);
-      result.forEach((score, dbIndex) => {
-        console.log(`Row ${rowIndex} > Compare with DB record ${dbIndex}. Rate: ${score.rate}. Score: ${Array.from(score.columnScore.values())}`);
+      const result = this.dbService.filter(rowData);
+      result.forEach((row) => {
+        console.log(row);
       });
       //console.log(result);
     }

@@ -5,7 +5,7 @@ type AOA = any[][];
 @Injectable()
 export class ExcelDatabaseService {
   data: AOA;
-  cacheSimilarScore: { columnScore: Map<number, number>, rate: number }[];
+
   headersIndexToCompareMap = {
     Location: 0,
     BuildingType: 1,
@@ -22,50 +22,34 @@ export class ExcelDatabaseService {
 
   loaData(data: AOA): void {
     this.data = data;
-    delete this.cacheSimilarScore;
   }
 
   isAvailable(): boolean {
     return !!this.data;
   }
-  
 
-  // comapre a row against database according to columnIndexToCompare
-  // returns an array of object with 
-  //    columnScpre: Map<number1, number2> where number 1 is the headerIndex and number2 is 1 (matched) or 0 (not matched)
-  //    rate: cost per unit
-  getRowSimilarityScore(match: string[]): { columnScore: Map<number, number>, rate: number }[] {
-    //use cache if exist
-    if(!!this.cacheSimilarScore) {
-      return this.cacheSimilarScore;
-    }
-
-    let scores = [];
-    let columnIndexToCompare = this.getColumnIndexToCompare();
-
+  filter(match: string[]): { id: number, jobName: string, location: string, type: string, level: string, finish:string}[] {
+    let result = [];
     //skip header row
     for(let rowIndex = 1; rowIndex < this.data.length; rowIndex++) {
-      let columnScore = new Map<number, number>();
-
-      for(let colIndex = 0; colIndex < this.data[rowIndex].length; colIndex++) {
-        const col = this.data[rowIndex][colIndex];
-        //only compare indexes listed in headersIndexToCompareMap
-        if(columnIndexToCompare.indexOf(colIndex) > -1)
-        {
-          if(col === match[colIndex]) {
-            columnScore.set(colIndex, 1);
-          } else {
-            columnScore.set(colIndex, 0);
-          }
-        }
+      const location = this.headersIndexToCompareMap.Location;
+      const buildingType = this.headersIndexToCompareMap.BuildingType;
+      const category = this.headersIndexToCompareMap.CategoryName;
+      if(match[location] !== this.data[rowIndex][location] || match[buildingType] !== this.data[rowIndex][buildingType] || match[category] !== this.data[rowIndex][category]){
+        continue;
       }
 
-      scores.push({ columnScore: columnScore, rate: this.data[rowIndex][this.headersIndexToCompareMap.Rate] });
+      result.push({
+        id: rowIndex, 
+        jobName: this.data[rowIndex][this.headersIndexToCompareMap.Project],
+        location: this.data[rowIndex][this.headersIndexToCompareMap.Location],
+        type: this.data[rowIndex][this.headersIndexToCompareMap.BuildingType],
+        level: this.data[rowIndex][this.headersIndexToCompareMap.Levels],
+        category: this.data[rowIndex][this.headersIndexToCompareMap.CategoryName],
+        finish: this.data[rowIndex][this.headersIndexToCompareMap.Finish]
+      });
     }
-
-    //set cache
-    this.cacheSimilarScore = scores;
-    return scores;
+    return result;
   }
 
   private getColumnIndexToCompare(): number[] {
