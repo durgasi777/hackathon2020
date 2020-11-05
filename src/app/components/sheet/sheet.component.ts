@@ -41,16 +41,16 @@ export class SheetComponent {
     reader.readAsBinaryString(target.files[0]);
   }
 
-  export(): void {
-    /* generate worksheet */
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.data);
-
-    /* generate workbook and add the worksheet */
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-    /* save to file */
-    XLSX.writeFile(wb, this.fileName);
+  getScore(): void {
+    //hardcode to check 2 rows
+    for(let rowIndex = 1; rowIndex < 3; rowIndex++) {
+      const rowData = this.data[rowIndex];
+      const result = this.dbService.getRowSimilarityScore(rowData);
+      result.forEach((score, dbIndex) => {
+        console.log(`Row ${rowIndex} > Compare with DB record ${dbIndex}. Rate: ${score.rate}. Score: ${Array.from(score.columnScore.values())}`);
+      });
+      //console.log(result);
+    }
   }
 
 }
