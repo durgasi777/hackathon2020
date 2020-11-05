@@ -117,16 +117,17 @@ export class HistoricalTableComponent implements OnInit {
 
   private onFilterChanged() {
     const filter = new Array<any>();
-    filter.push(...this.locationFilter);
-    filter.push(...this.typeFilter);
-    filter.push(...this.levelFilter);
-    filter.push(...this.finishFilter);
-    filter.push(...this.thicknessFilter);
     if (this.jobAPushed) {
       filter.push('Wall');
       filter.push('No');
       filter.push(12);
       filter.push('Concrete Masonry Units');
+    } else {
+      filter.push(...this.locationFilter);
+      filter.push(...this.typeFilter);
+      filter.push(...this.levelFilter);
+      filter.push(...this.finishFilter);
+      filter.push(...this.thicknessFilter);
     }
     if (filter.length > 0) {
       this.tableDataSource2.filter = JSON.stringify(filter);
