@@ -1,4 +1,36 @@
-<mat-table #table [dataSource]="dataWithoutHeader" matSort *ngIf="data && data.length > 0">
+<app-dropdown
+  [label]="'Location'"
+  [values]="locations"
+  (onDropdownChanged)="onLocationFilterChanged($event)">
+</app-dropdown>
+<app-dropdown
+  [label]="'Type'"
+  [values]="types"
+  (onDropdownChanged)="onTypeFilterChanged($event)">
+</app-dropdown>
+<app-dropdown
+[label]="'Levels'"
+[values]="levels"
+(onDropdownChanged)="onLevelsFilterChanged($event)">
+</app-dropdown>
+<app-dropdown
+  [label]="'Finish'"
+  [values]="finishes"
+  (onDropdownChanged)="onFinishFilterChanged($event)">
+</app-dropdown>
+<app-dropdown
+  [label]="'Thickness'"
+  [values]="thicknesses"
+  (onDropdownChanged)="onThicknessFilterChanged($event)">
+</app-dropdown>
+<app-dropdown
+  [label]="'Confidence'"
+  [values]="confidenceLevels"
+  [multiple]="false"
+  (onDropdownChanged)="onConfidenceChanged($event)">
+</app-dropdown>
+
+<mat-table #table [dataSource]="tableDataSource" matSort *ngIf="data && data.length > 0">
   <ng-container matColumnDef="{{column}}" *ngFor="let column of columnNames; let i = index">
     <mat-header-cell *matHeaderCellDef mat-sort-header>{{column}}</mat-header-cell>
     <mat-cell *matCellDef="let element">{{getCell(element, column)}}</mat-cell>
