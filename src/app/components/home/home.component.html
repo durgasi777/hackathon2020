@@ -5,6 +5,38 @@
     </div>
   </section>
 
+  <app-dropdown
+    [label]="'Location'"
+    [values]="locations"
+    (onDropdownChanged)="onLocationFilterChanged($event)">
+  </app-dropdown>
+  <app-dropdown
+    [label]="'Type'"
+    [values]="types"
+    (onDropdownChanged)="onTypeFilterChanged($event)">
+  </app-dropdown>
+  <app-dropdown
+  [label]="'Levels'"
+  [values]="levels"
+  (onDropdownChanged)="onLevelsFilterChanged($event)">
+  </app-dropdown>
+  <app-dropdown
+    [label]="'Finish'"
+    [values]="finishes"
+    (onDropdownChanged)="onFinishFilterChanged($event)">
+  </app-dropdown>
+  <app-dropdown
+    [label]="'Thickness'"
+    [values]="thicknesses"
+    (onDropdownChanged)="onThicknessFilterChanged($event)">
+  </app-dropdown>
+  <app-dropdown
+    [label]="'Confidence'"
+    [values]="confidenceLevels"
+    [multiple]="false"
+    (onDropdownChanged)="onConfidenceChanged($event)">
+  </app-dropdown>
+
   <section>
     <div class="flex-container">
       <app-sheet></app-sheet>>

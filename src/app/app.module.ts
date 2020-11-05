@@ -46,6 +46,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { NavBarComponent } from './components/shared/navbar/navbar.component';
 import { ToolbarComponent } from './components/shared/toolbar/toolbar.component';
+import { DropdownComponent } from './components/sheet/dropdown.component';
 import { SheetComponent } from './components/sheet/sheet.component';
 import { UserDetailsComponent } from './components/users/details/user-details.component';
 import { UserListComponent } from './components/users/list/user-list.component';
@@ -119,7 +120,8 @@ const appRoutes: Routes = [
     TypographyComponent,
     ConfirmDialogComponent,
     SheetComponent,
-    DatabaseComponent
+    DatabaseComponent,
+    DropdownComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -158,10 +160,10 @@ const appRoutes: Routes = [
   providers: [
     HttpService,
     Title,
-    { 
-      provide: HTTP_INTERCEPTORS, 
-      useClass: NgProgressInterceptor, 
-      multi: true 
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: NgProgressInterceptor,
+      multi: true
     },
     ExcelDatabaseService
   ],
