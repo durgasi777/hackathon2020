@@ -28,8 +28,11 @@ export class ExcelDatabaseService {
     return !!this.data;
   }
 
-  filter(match: string[]): { id: number, jobName: string, location: string, type: string, level: string, finish:string}[] {
+  filter(match: string[]): { id: number, jobName: string, location: string, buildingType: string,
+    type:string, material:string, loadBearing:string, thickness:string, level: string, finish:string, rate: string, score: Map<number, number>}[] {
+      
     let result = [];
+    const columnToCompare = this.getColumnIndexToCompare();
     //skip header row
     for(let rowIndex = 1; rowIndex < this.data.length; rowIndex++) {
       const location = this.headersIndexToCompareMap.Location;
@@ -39,22 +42,44 @@ export class ExcelDatabaseService {
         continue;
       }
 
+      const score = new Map<number, number>();
+      for(let colIndex = 1; colIndex < this.data[rowIndex].length; colIndex++) {
+        const col = this.data[rowIndex][colIndex];
+        if(columnToCompare.indexOf(colIndex) > -1) {	        
+          if(col === match[colIndex]) {
+            score.set(colIndex, 1);	          
+          } else {	         
+            score.set(colIndex, 0);	            
+          }	          
+        }
+      }
+
       result.push({
         id: rowIndex, 
         jobName: this.data[rowIndex][this.headersIndexToCompareMap.Project],
         location: this.data[rowIndex][this.headersIndexToCompareMap.Location],
-        type: this.data[rowIndex][this.headersIndexToCompareMap.BuildingType],
+        buildingType: this.data[rowIndex][this.headersIndexToCompareMap.BuildingType],
         level: this.data[rowIndex][this.headersIndexToCompareMap.Levels],
         category: this.data[rowIndex][this.headersIndexToCompareMap.CategoryName],
-        finish: this.data[rowIndex][this.headersIndexToCompareMap.Finish]
+        type: this.data[rowIndex][this.headersIndexToCompareMap.TypeName],
+        material: this.data[rowIndex][this.headersIndexToCompareMap.Material],
+        loadBearing: this.data[rowIndex][this.headersIndexToCompareMap.LoadBearing],
+        thickNess: this.data[rowIndex][this.headersIndexToCompareMap.Thickness],
+        finish: this.data[rowIndex][this.headersIndexToCompareMap.Finish],
+        rate: this.data[rowIndex][this.headersIndexToCompareMap.Rate],
+        score: score
       });
     }
     return result;
   }
 
+  // getConfidenceByIndex(index: number, match: string[]): number {
+
+  // }
+
   private getColumnIndexToCompare(): number[] {
     // only match some of the header
     // see headersIndexToCompareMap to know what is being matched 
-    return Object.values(this.headersIndexToCompareMap).filter(value => value > 4 && value < 11 && value !== 9);
+    return Object.values(this.headersIndexToCompareMap).filter(value => value > 4 && value < 9);
   }
 }
