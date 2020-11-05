@@ -5,18 +5,18 @@ type AOA = any[][];
 @Injectable()
 export class ExcelDatabaseService {
   data: AOA;
-  cacheSimilarScore: Map<number, number>[];
+  cacheSimilarScore: { columnScore: Map<number, number>, rate: number }[];
   headersIndexToCompareMap = {
-    Project: 0,
-    Family: 1,
-    Name: 2,
-    Object_Type: 3,
-    Building_Element_Is_External: 4,
-    Reference_Level: 5,
-    Category: 6,
-    Length: 7,
-    Height: 8,
-    Width: 9,
+    Location: 0,
+    BuildingType: 1,
+    Levels: 2,
+    Project: 3,
+    CategoryName: 4,
+    TypeName: 5,
+    LoadBearing: 6,
+    Material: 7,
+    Thickness: 8,
+    Finish: 9,
     Rate: 10
   };
 
@@ -37,8 +37,10 @@ export class ExcelDatabaseService {
   
 
   // comapre a row against database according to columnIndexToCompare
-  // returns an array of Map<number1, number2> where number 1 is the headerIndex and number2 is 1 (matched) or 0 (not matched)
-  getRowSimilarityScore(match: string[]): Map<number, number>[] {
+  // returns an array of object with 
+  //    columnScpre: Map<number1, number2> where number 1 is the headerIndex and number2 is 1 (matched) or 0 (not matched)
+  //    rate: cost per unit
+  getRowSimilarityScore(match: string[]): { columnScore: Map<number, number>, rate: number }[] {
     //use cache if exist
     if(!!this.cacheSimilarScore) {
       return this.cacheSimilarScore;
@@ -49,20 +51,21 @@ export class ExcelDatabaseService {
 
     //skip header row
     for(let rowIndex = 1; rowIndex < this.data.length; rowIndex++) {
-      let rowScore = new Map<number, number>();
-      this.data[rowIndex].forEach((col, colIndex) => {
+      let columnScore = new Map<number, number>();
 
+      this.data[rowIndex].forEach((col, colIndex) => {
         //only compare indexes listed in headersIndexToCompareMap
         if(columnIndexToCompare.some(val => val === colIndex))
         {
           if(col === match[colIndex]) {
-            rowScore.set(colIndex, 1);
+            columnScore.set(colIndex, 1);
           } else {
-            rowScore.set(colIndex, 0);
+            columnScore.set(colIndex, 0);
           }
         }
-      })
-      scores.push(rowScore);
+      });
+
+      scores.push({ columnScore: columnScore, rate: this.data[rowIndex][this.headersIndexToCompareMap.Rate] });
     }
 
     //set cache
@@ -71,6 +74,8 @@ export class ExcelDatabaseService {
   }
 
   private getColumnIndexToCompare(): number[] {
-    return Object.values(this.headersIndexToCompareMap);
+    // only match some of the header
+    // see headersIndexToCompareMap to know what is being matched 
+    return Object.values(this.headersIndexToCompareMap).filter(value => value > 4 && value < 10);
   }
 }
