@@ -9,7 +9,7 @@ import { TableDataSource } from './table-data-source';
 })
 export class HistoricalTableComponent implements OnInit {
   // tslint:disable-next-line: max-line-length
-  displayedColumns: string[] = ['Location', 'Building Type', 'Levels', 'Project', 'Category Name', 'Type Name', 'Load Bearing', 'Material', 'Thickness', 'Finish', 'Rate', 'Name', 'Object type', 'Building Element Is External', 'Reference Level', 'Category', 'Length', 'Height', 'Width', 'Area', 'Volume'];
+  displayedColumns: string[] = ['Location', 'Building Type', 'Levels', 'Project', 'Category Name', 'Type Name', 'Load Bearing', 'Material', 'Thickness', 'Finish', 'Rate', 'Name', 'Object type', 'Building Element Is External', 'Reference Level', 'Category', 'Length', 'Height', 'Width', 'Area', 'Volume', 'Confidence'];
   private nonEmptyColumnNames: string[];
   private nonEmptyColumnNamesMap: Map<string, number>;
   private tableDataSource2: TableDataSource;
@@ -26,6 +26,7 @@ export class HistoricalTableComponent implements OnInit {
   levelFilter: string[];
   finishFilter: string[];
   thicknessFilter: string[];
+  displayConfidence = false;
 
   constructor(private excelDatabaseService: ExcelDatabaseService) {
   }
@@ -66,47 +67,39 @@ export class HistoricalTableComponent implements OnInit {
   }
 
   getCell(element: any, column: any) {
+    if (column === 'Confidence' && !this.displayConfidence) {
+      return null;
+    }
     const index = this.nonEmptyColumnNamesMap.get(column);
     return element[index];
   }
 
-  // getColumnNames() {
-  //   if (this.data) {
-  //     const temp = this.data[0].toString();
-  //     const x = 235;
-  //   }
-  // }
-
   onLocationFilterChanged(newFilter: any) {
     this.locationFilter = newFilter;
-    this.onFilterChanged('Location', newFilter);
+    this.onFilterChanged();
   }
 
   onTypeFilterChanged(newFilter: any) {
     this.typeFilter = newFilter;
-    this.onFilterChanged('Building Type', newFilter);
+    this.onFilterChanged();
   }
 
   onLevelsFilterChanged(newFilter: any) {
     this.levelFilter = newFilter;
-    this.onFilterChanged('Levels', newFilter);
+    this.onFilterChanged();
   }
 
   onFinishFilterChanged(newFilter: any) {
     this.finishFilter = newFilter;
-    this.onFilterChanged('Finish', newFilter);
+    this.onFilterChanged();
   }
 
   onThicknessFilterChanged(newFilter: any) {
     this.thicknessFilter = newFilter;
-    this.onFilterChanged('Thickness', newFilter);
+    this.onFilterChanged();
   }
 
-  onConfidenceChanged(newConfidence: any) {
-    const x = 435;
-  }
-
-  private onFilterChanged(filterName: string, newFilter = []) {
+  private onFilterChanged() {
     const filter = new Array<string>();
     filter.push(...this.locationFilter);
     filter.push(...this.typeFilter);

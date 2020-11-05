@@ -23,12 +23,6 @@
   [values]="thicknesses"
   (onDropdownChanged)="onThicknessFilterChanged($event)">
 </app-dropdown>
-<app-dropdown
-  [label]="'Confidence'"
-  [values]="confidenceLevels"
-  [multiple]="false"
-  (onDropdownChanged)="onConfidenceChanged($event)">
-</app-dropdown>
 
 <mat-table #table [dataSource]="tableDataSource" matSort *ngIf="data && data.length > 0">
   <ng-container matColumnDef="{{column}}" *ngFor="let column of columnNames; let i = index">
