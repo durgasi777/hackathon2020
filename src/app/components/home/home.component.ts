@@ -56,8 +56,8 @@ export class HomeComponent implements OnInit {
     const x = 435;
   }
 
-  private onFilterChanged(filterName: string, newFilter: []) {
-
+  private onFilterChanged(filterName: string, newFilter = []) {
+    const x = 345;
   }
 
   private getNumberArray(from: number, to: number, jump = 1): number[] {

@@ -26,6 +26,7 @@ import {
   MatToolbarModule,
   MatTooltipModule,
 } from '@angular/material';
+import { MatTableModule } from '@angular/material/table';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
@@ -48,6 +49,7 @@ import { NavBarComponent } from './components/shared/navbar/navbar.component';
 import { ToolbarComponent } from './components/shared/toolbar/toolbar.component';
 import { DropdownComponent } from './components/sheet/dropdown.component';
 import { SheetComponent } from './components/sheet/sheet.component';
+import { HistoricalTableComponent } from './components/table/historical-table.component';
 import { UserDetailsComponent } from './components/users/details/user-details.component';
 import { UserListComponent } from './components/users/list/user-list.component';
 import { CreateEditUserComponent } from './components/users/shared/create-edit-user/create-edit-user.component';
@@ -121,7 +123,8 @@ const appRoutes: Routes = [
     ConfirmDialogComponent,
     SheetComponent,
     DatabaseComponent,
-    DropdownComponent
+    DropdownComponent,
+    HistoricalTableComponent
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -153,6 +156,7 @@ const appRoutes: Routes = [
     MatProgressBarModule,
     MatTabsModule,
     MatChipsModule,
+    MatTableModule,
 
     ChartsModule,
     RoundProgressModule
